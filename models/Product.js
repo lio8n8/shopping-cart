@@ -26,14 +26,25 @@ const ProductSchema = mongoose.Schema({
             title: { type: String },
             imgPath: { type: String }
         },
-        sm: [{
+        sm: {
+            title: { type: String },
+            imgPath: { type: String }
+        },
+        samples: [{
             title: { type: String },
             imgPath: { type: String }
         }]
     },
     price: {
-        type: Double,
+        type: Number,
         default: 0
+    },
+    isOnline: {
+        type: Boolean,
+        default: false
+    },
+    rating: {
+        type: Number,
     },
     company: {
         type: String

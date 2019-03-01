@@ -53,9 +53,9 @@ const UserSchema = mongoose.Schema({
         isNotificationEnabled: { type: Boolean },
         isSubscriptionEnabled: { type: Boolean }
     },
-    role: {
-        type: String,
-        enum: ['user', 'admin']
+    isAdmin: {
+        type: Boolean,
+        default: false
     },
     likes: [{
         type: mongoose.Schema.Types.ObjectId,
