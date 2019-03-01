@@ -12,14 +12,12 @@ class Logger {
                     type: 'console'
                 },
                 debug: getLoggerConfigs('debug'),
-                error: getLoggerConfigs('error'),
-                test: getLoggerConfigs('test')
+                error: getLoggerConfigs('error')
             },
             categories: {
                 default: { appenders: ['console'], level: 'all' },
                 debug: 'debug',
-                error: 'error',
-                test: 'all'
+                error: 'error'
             }
         });
     }
