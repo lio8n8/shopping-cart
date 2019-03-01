@@ -11,6 +11,7 @@ module.exports = {
 
     // Token configs
     JSON_WEBTOKEN_SECRET: process.env.JSON_WEBTOKEN_SECRET,
+    JSON_WEBTOKEN_SECRET_ADMIN: process.env.JSON_WEBTOKEN_SECRET_ADMIN,
     JSON_WEBTOKEN_EXPIRATION: process.env.JSON_WEBTOKEN_EXPIRATION,
 
     LIMIT: 100

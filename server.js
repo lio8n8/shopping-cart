@@ -1,7 +1,7 @@
 const https = require('http');
 const fs = require('fs');
 const app = require('./app');
-const logger = require('./services/logger');
+const logger = require('./utils/logger');
 
 const server = https.createServer(app);
 
