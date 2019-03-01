@@ -20,6 +20,7 @@
   "homepage": "https://github.com/lio8n8/shopping-cart#readme",
   "dependencies": {
     "bcrypt": "^3.0.4",
+    "compression": "^1.7.3",
     "env-cmd": "^8.0.2",
     "express": "^4.16.4",
     "helmet": "^3.15.1",
