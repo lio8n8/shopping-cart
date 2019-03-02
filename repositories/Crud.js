@@ -11,12 +11,24 @@ class Crud {
         return this.model.findById(id).exec();
     }
 
+    find(query) {
+        let { skip, limit } = query;
+
+        return this.model.find(
+            {},
+            { __v: 0 },
+            {
+                limit,
+                skip: skip * limit
+            }).exec();
+    }
+
     createOne(data) {
         return (new this.model(data)).save();
     }
 
     updateOne(item, data) {
-        return this.model.findOneAndUpdate(item, data).exec();
+        return this.model.findOneAndUpdate(item, data, { new: true }).exec();
     }
 
     deleteOne(filter) {
