@@ -35,7 +35,7 @@ describe('Product', () => {
     describe('Get product', () => {
         let product = null;
 
-        beforeEach(async () => {
+        before(async () => {
             product = new Product(testData.getProduct());
             await product.save();
         });
@@ -60,7 +60,7 @@ describe('Product', () => {
     describe('Update product', () => {
         let product = null;
 
-        beforeEach(async () => {
+        before(async () => {
             product = new Product(testData.getProduct());
             await product.save();
         });
@@ -86,7 +86,7 @@ describe('Product', () => {
     describe('Delete product', () => {
         let product = null;
 
-        beforeEach(async () => {
+        before(async () => {
             product = new Product(testData.getProduct());
             await product.save();
         });
