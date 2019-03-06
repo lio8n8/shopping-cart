@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const productRepository = require('../repositories/Product');
 const validators = require('../validators');
+const checkAuth = require('../middleware/checkAuth');
+const validateObjectId = require('../middleware/validateObjectId');
 const configs = require('../configs');
 
 router.get('/', async (req, res, next) => {
@@ -26,10 +28,10 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', checkAuth.admin, async (req, res, next) => {
     try {
         const data = req.body;
-        const product = await productRepository.createOne(data);
+        const product = await productRepository.createOne(Object.assign(data, { createdBy: req.tokenPayload.id }));
 
         return res.status(201).json(product);
     } catch (e) {
@@ -37,7 +39,7 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', [validateObjectId, checkAuth.admin], async (req, res, next) => {
     try {
         const id = req.params.id;
         const data = req.body;
@@ -49,7 +51,7 @@ router.put('/:id', async (req, res, next) => {
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', [validateObjectId, checkAuth.admin], async (req, res, next) => {
     try {
         const id = req.params.id;
         await productRepository.deleteOne({ _id: id });
