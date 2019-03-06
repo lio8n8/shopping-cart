@@ -31,7 +31,8 @@ router.get('/:id', async (req, res, next) => {
 router.post('/', checkAuth.admin, async (req, res, next) => {
     try {
         const data = req.body;
-        const product = await productRepository.createOne(Object.assign(data, { createdBy: req.tokenPayload.id }));
+        const userId = req.tokenPayload.id;
+        const product = await productRepository.createOne(Object.assign(data, { createdBy: userId }));
 
         return res.status(201).json(product);
     } catch (e) {

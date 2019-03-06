@@ -20,6 +20,8 @@ const CartSchema = mongoose.Schema({
 });
 
 CartSchema.methods.addProduct = function (product) {
+    this.productLineItems = this.productLineItems || {};
+
     if (this.productLineItems[product._id]) {
         this.productLineItems[product._id].price += product;
         this.productLineItems[product._id].qty++;
@@ -32,10 +34,10 @@ CartSchema.methods.addProduct = function (product) {
         }
     }
 
-    this.productLineItems[product._id].totalPrice += product.price;
-        this.productLineItems[product._id].totalQty++;
+    this.totalPrice += product.price;
+    this.totalQty++;
 
-    return this.save();
+    return this;
 };
 
 CartSchema.methods.deleteProduct = function (productId) {

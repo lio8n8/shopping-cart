@@ -6,6 +6,13 @@ class Cart extends Crud {
         super();
         this.model = CartModel;
     }
+
+    createOneWithProduct(userId, product) {
+        const cart = new this.model({ user: userId });
+        cart.addProduct(product);
+
+        return cart.save();
+    }
 }
 
 module.exports = new Cart();
