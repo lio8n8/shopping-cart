@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const configs = require('../../configs');
 
-class Auth {
+class TokenService {
     getToken(user) {
         return jwt.sign(
             {
@@ -15,14 +15,6 @@ class Auth {
             }
         );
     }
-
-    googleAuth() {
-        throw new Error('Not yet implemented!');
-    }
-
-    githubAuth() {
-        throw new Error('Not yet implemented!');
-    }
 }
 
-module.exports = Auth;
+module.exports = TokenService;
