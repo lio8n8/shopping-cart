@@ -7,8 +7,12 @@ class User extends Crud {
         this.model = UserModel;
     }
 
-    findById(id) {
-        return this.model.find({ _id: id }, { psw: 0 }).exec();
+    findById(id, isShowPsw = false) {
+        return this.model.findOne({ _id: id }, { psw: isShowPsw ? 1 : 0 }).exec();
+    }
+
+    findByEmail(email) {
+        return this.model.findOne({ email }).exec();
     }
 
     find(query) {
