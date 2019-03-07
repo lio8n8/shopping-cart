@@ -13,6 +13,14 @@ class Cart extends Crud {
 
         return cart.save();
     }
+
+    async resetCart(cartId, userId, checkUserAccess) {
+        const cart = await this.model.findById(cartId);
+        checkUserAccess(userId, cart);
+        cart.reset();
+
+        return cart.save();
+    }
 }
 
 module.exports = new Cart();
