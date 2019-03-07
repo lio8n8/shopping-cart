@@ -14,6 +14,30 @@ class Cart extends Crud {
         return cart.save();
     }
 
+    async addProduct(cartId, product, userId, checkUserAccess) {
+        const cart = await this.model.findById(cartId);
+        checkUserAccess(userId, cart);
+        cart.addProduct(product);
+
+        return cart.save();
+    }
+
+    async removeProduct(cartId, productId, userId, checkUserAccess) {
+        const cart = await this.model.findById(cartId);
+        checkUserAccess(userId, cart);
+        cart.removeProduct(productId);
+
+        return cart.save();
+    }
+
+    async removeProductLineItem(cartId, productId, userId, checkUserAccess) {
+        const cart = await this.model.findById(cartId);
+        checkUserAccess(userId, cart);
+        cart.removeProductLineItem(productId);
+
+        return cart.save();
+    }
+
     async resetCart(cartId, userId, checkUserAccess) {
         const cart = await this.model.findById(cartId);
         checkUserAccess(userId, cart);

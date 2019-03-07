@@ -30,21 +30,27 @@ router.post('/', checkAuth.user, async (req, res, next) => {
     }
 });
 
-router.put('/:id', [validateObjectId, checkAuth.user], (req, res, next) => {
-    throw new Error('Not yet implemented!');
-});
-
-router.put(':/id/addproduct', [validateObjectId, checkAuth.user], (req, res, next) => {
+router.put('/:id/addproduct', [validateObjectId, checkAuth.user], async (req, res, next) => {
     try {
+        const cartId = req.params.id;
+        const userId = req.tokenPayload.id;
+        const product = req.body;
+        const cart = await cartRepository.addProduct(cartId, product, userId, _checkUserAccess);
 
+        return res.status(200).json(cart);
     } catch (e) {
         return next(e);
     }
 });
 
-router.put(':/id/deleteproduct', [validateObjectId, checkAuth.user], (req, res, next) => {
+router.put('/:id/removeproduct', [validateObjectId, checkAuth.user], async (req, res, next) => {
     try {
+        const cartId = req.params.id;
+        const userId = req.tokenPayload.id;
+        const { productId } = req.body;
+        const cart = await cartRepository.removeProduct(cartId, productId, userId, _checkUserAccess);
 
+        return res.status(200).json(cart);
     } catch (e) {
         return next(e);
     }
@@ -56,7 +62,7 @@ router.put('/:id/reset', [validateObjectId, checkAuth.user], async (req, res, ne
         const userId = req.tokenPayload.id;
         await cartRepository.resetCart(cartId, userId, _checkUserAccess);
 
-        res.status(200).end();
+        return res.status(200).end();
     } catch (e) {
         return next(e);
     }

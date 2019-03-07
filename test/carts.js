@@ -79,11 +79,36 @@ describe('Cart', () => {
         });
 
         it('should add product', async () => {
+            const product = new Product(testData.getProduct());
+            await product.save();
 
+            const res = await chai.request(app)
+                .put(`${baseUrl}/${cart._id}/addproduct`)
+                .send(product)
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
+
+            res.should.have.status(200);
+            res.body.should.have.property('totalQty').which.equal(1);
+            res.body.should.have.property('totalPrice').which.equal(product.price);
+            res.body.should.have.property('productLineItems');
         });
 
         it('should remove product', async () => {
+            const product = new Product(testData.getProduct());
+            await product.save();
+            await chai.request(app)
+                .put(`${baseUrl}/${cart._id}/addproduct`)
+                .send(product)
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
 
+            const res = await chai.request(app)
+                .put(`${baseUrl}/${cart._id}/removeproduct`)
+                .send({ productId: product._id })
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
+
+            res.should.have.status(200);
+            res.body.should.have.property('totalQty').which.equal(0);
+            res.body.should.have.property('totalPrice').which.equal(0);
         });
 
         it('should remove productLineItem', async () => {

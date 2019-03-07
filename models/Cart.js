@@ -40,7 +40,7 @@ CartSchema.methods.addProduct = function (product) {
     return this;
 };
 
-CartSchema.methods.deleteProduct = function (productId) {
+CartSchema.methods.removeProduct = function (productId) {
     if (!this.productLineItems[productId]) {
         throw new Error(`Can not find product: ${productId} in cart.`);
     }
@@ -63,7 +63,7 @@ CartSchema.methods.deleteProduct = function (productId) {
     return this;
 };
 
-CartSchema.methods.deleteProductLineItems = function (productId) {
+CartSchema.methods.removeProductLineItem = function (productId) {
     if (!this.productLineItems[productId]) {
         throw new Error(`Can not find product: ${productId} in cart.`);
     }
