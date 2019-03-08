@@ -37,6 +37,7 @@ CartSchema.methods.addProduct = function (product) {
     this.totalPrice += product.price;
     this.totalQty++;
 
+    this.markModified(`productLineItems.${product._id}`);
     return this;
 };
 
@@ -46,20 +47,21 @@ CartSchema.methods.removeProduct = function (productId) {
     }
 
     if (this.totalQty <= 1) {
-        this.reset();
+        return this.reset();
     }
 
-    const product = Object.assign({}, this.productLineItems[productId]);
+    const productPrice = this.productLineItems[productId].price;
     if (this.productLineItems[productId].qty > 1) {
-        this.productLineItems[productId].totalPrice -= product.price;
+        this.productLineItems[productId].totalPrice -= productPrice;
         this.productLineItems[productId].qty--;
     } else {
         delete this.productLineItems[productId];
     }
 
-    this.totalPrice -= product.price;
+    this.totalPrice -= productPrice;
     this.totalQty--;
 
+    this.markModified(`productLineItems.${productId}`);
     return this;
 };
 
@@ -69,12 +71,14 @@ CartSchema.methods.removeProductLineItem = function (productId) {
     }
 
     if (this.totalQty <= 1 || Object.keys(this.productLineItems[productId]) <= 1) {
-        this.reset();
+        return this.reset();
     }
 
-    const pli = Object.assign({}, this.productLineItems[productId]);
-    this.totalPrice -= pli.totalPrice;
-    this.totalQty -= pli.qty;
+    this.totalPrice -= this.productLineItems[productId].totalPrice;
+    this.totalQty -= this.productLineItems[productId].qty;
+
+    delete this.productLineItems[productId];
+    this.markModified(`productLineItems.${productId}`);
 
     return this;
 };

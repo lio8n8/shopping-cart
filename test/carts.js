@@ -54,11 +54,21 @@ describe('Cart', () => {
         });
 
         it('should return carts', async () => {
+            const res = await chai.request(app)
+                .get(baseUrl)
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
 
+            res.should.have.status(200);
+            res.should.be.json;
         });
 
-        it('shoukd return cart', async () => {
+        it('should return cart', async () => {
+            const res = await chai.request(app)
+                .get(`${baseUrl}/${cart._id}`)
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
 
+            res.should.have.status(200);
+            res.should.be.json;
         });
     });
 
@@ -112,7 +122,25 @@ describe('Cart', () => {
         });
 
         it('should remove productLineItem', async () => {
+            const product = new Product(testData.getProduct());
+            await product.save();
+            await chai.request(app)
+                .put(`${baseUrl}/${cart._id}/addproduct`)
+                .send(product)
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
+            await chai.request(app)
+                .put(`${baseUrl}/${cart._id}/addproduct`)
+                .send(product)
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
 
+            const res = await chai.request(app)
+                .put(`${baseUrl}/${cart._id}/removepli`)
+                .send({ productId: product._id })
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
+
+            res.should.have.status(200);
+            res.body.should.have.property('totalQty').which.equal(0);
+            res.body.should.have.property('totalPrice').which.equal(0);
         });
 
         it('should reset cart', async () => {
@@ -128,6 +156,28 @@ describe('Cart', () => {
     });
 
     describe('Remove cart', () => {
+        let user = null;
+        let cart = null;
 
+        beforeEach(async () => {
+            user = new User(testData.getUser());
+            await user.save();
+
+            cart = new Cart({ user });
+            await cart.save();
+        });
+
+        it('should remove cart', async () => {
+            const res = await chai.request(app)
+                .delete(`${baseUrl}/${cart._id}`)
+                .set('authorization', `Bearer ${tokenService.getToken(user)}`);
+
+            res.should.have.status(204);
+            res.body.should.to.be.empty;
+        });
+
+        it('should not remove cart', async () => {
+
+        });
     })
 });
