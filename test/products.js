@@ -3,6 +3,8 @@ const chaiHttp = require('chai-http');
 const app = require('../app');
 const logger = require('../utils/logger');
 const Product = require('../models/Product');
+const User = require('../models/User');
+const tokenService = require('../services/tokenService');
 const baseUrl = '/api/products';
 const testData = require('../utils/testData');
 
@@ -10,8 +12,12 @@ chai.use(chaiHttp);
 chai.should();
 
 describe('Product', () => {
+    let admin = null;
+
     before(async () => {
         try {
+            admin = new User(Object.assign(testData.getUser(), { isAdmin: true }));
+            await admin.save();
             await Product.deleteMany({});
         } catch (e) {
             logger.getLogger('error').error(e);
@@ -23,7 +29,8 @@ describe('Product', () => {
             const product = testData.getProduct();
             const res = await chai.request(app)
                 .post(baseUrl)
-                .send(product);
+                .send(product)
+                .set('authorization', `Bearer ${tokenService.getToken(admin)}`);
 
             res.should.have.status(201);
             res.should.be.json;
@@ -71,7 +78,8 @@ describe('Product', () => {
                 .put(`${baseUrl}/${product._id}`)
                 .send({
                     title
-                });
+                })
+                .set('authorization', `Bearer ${tokenService.getToken(admin)}`);
 
             res.should.have.status(200);
             res.should.be.json;
@@ -93,7 +101,8 @@ describe('Product', () => {
 
         it('should delete product', async () => {
             const res = await chai.request(app)
-                .delete(`${baseUrl}/${product._id}`);
+                .delete(`${baseUrl}/${product._id}`)
+                .set('authorization', `Bearer ${tokenService.getToken(admin)}`);
 
             res.should.have.status(204);
             res.body.should.to.be.empty;

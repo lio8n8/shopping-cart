@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const CartSchema = mongoose.Schema({
     productLineItems: {
-        type: Object,
-        required: true
+        type: Object
     },
     totalQty: {
         type: Number,
@@ -20,38 +19,76 @@ const CartSchema = mongoose.Schema({
 });
 
 CartSchema.methods.addProduct = function (product) {
+    this.productLineItems = this.productLineItems || {};
+
     if (this.productLineItems[product._id]) {
-        this.productLineItems[product._id].price += product;
+        this.productLineItems[product._id].totalPrice += product.price;
         this.productLineItems[product._id].qty++;
     } else {
         this.productLineItems[product._id] = {
             title: product.title,
             price: product.price,
+            totalPrice: product.price,
             qty: 1,
             img: product.imgs.sm
         }
     }
 
-    this.productLineItems[product._id].totalPrice += product.price;
-        this.productLineItems[product._id].totalQty++;
+    this.totalPrice += product.price;
+    this.totalQty++;
 
-    return this.save();
+    this.markModified(`productLineItems.${product._id}`);
+    return this;
 };
 
-CartSchema.methods.deleteProduct = function (productId) {
-    throw new Error('Not yet implemented');
+CartSchema.methods.removeProduct = function (productId) {
+    if (!this.productLineItems[productId]) {
+        throw new Error(`Can not find product: ${productId} in cart.`);
+    }
+
+    if (this.totalQty <= 1) {
+        return this.reset();
+    }
+
+    const productPrice = this.productLineItems[productId].price;
+    if (this.productLineItems[productId].qty > 1) {
+        this.productLineItems[productId].totalPrice -= productPrice;
+        this.productLineItems[productId].qty--;
+    } else {
+        delete this.productLineItems[productId];
+    }
+
+    this.totalPrice -= productPrice;
+    this.totalQty--;
+
+    this.markModified(`productLineItems.${productId}`);
+    return this;
 };
 
-CartSchema.methods.deleteProductLineItems = function (oriductId) {
-    throw new Error('Not yet implementedI');
+CartSchema.methods.removeProductLineItem = function (productId) {
+    if (!this.productLineItems[productId]) {
+        throw new Error(`Can not find product: ${productId} in cart.`);
+    }
+
+    if (this.totalQty <= 1 || Object.keys(this.productLineItems[productId]) <= 1) {
+        return this.reset();
+    }
+
+    this.totalPrice -= this.productLineItems[productId].totalPrice;
+    this.totalQty -= this.productLineItems[productId].qty;
+
+    delete this.productLineItems[productId];
+    this.markModified(`productLineItems.${productId}`);
+
+    return this;
 };
 
-CartSchema.methods.resetCart = function () {
+CartSchema.methods.reset = function () {
     this.productLineItems = {};
     this.totalPrice = 0;
     this.totalQty = 0;
 
-    return this.save();
+    return this;
 }
 
 module.exports = mongoose.model('Cart', CartSchema);
