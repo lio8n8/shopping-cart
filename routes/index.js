@@ -5,6 +5,7 @@ const carts = require('./carts');
 const orders = require('./orders');
 const history = require('./history');
 const logs = require('./logs');
+const docs = require('./docs');
 
 module.exports.init = app => {
     app.use('/api/users', users);
@@ -13,5 +14,6 @@ module.exports.init = app => {
     app.use('/api/orders', orders);
     app.use('/api/history', history);
     app.use('/api/logs', logs);
+    app.use('/docs', docs);
     app.use('/', welcome);
 };

@@ -13,7 +13,8 @@ const app = express();
 app.enable('trust proxy');
 app.set('port', configs.NODE_JS_PORT);
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
+app.use('/docs', express.static('public/docs'));
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

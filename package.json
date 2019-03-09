@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "dev": "env-cmd ./dev.env nodemon server.js",
-    "start": "env-cmd ./prod.env node server.js",
-    "test": "env-cmd ./test.env nyc mocha --exit"
+    "start": "npm run docs & env-cmd ./prod.env node server.js",
+    "test": "env-cmd ./test.env nyc mocha --exit",
+    "docs": "apidoc -i routes/ -o public/docs"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/lio8n8/shopping-cart#readme",
   "dependencies": {
+    "apidoc": "^0.17.7",
     "bcrypt": "^3.0.4",
     "compression": "^1.7.3",
     "env-cmd": "^8.0.2",
