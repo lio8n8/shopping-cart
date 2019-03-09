@@ -1,12 +1,11 @@
 const https = require('http');
-const fs = require('fs');
 const app = require('./app');
 const logger = require('./utils/logger');
 
 const server = https.createServer(app);
 
 server.on('close', () => {
-    logger.getLogger('error').info('Server closed closed');
+    logger.errorLogger.info('Server closed closed');
 });
 
 server.on('SIGINT', () => {
@@ -15,8 +14,8 @@ server.on('SIGINT', () => {
 
 server.listen(app.get('port'), err => {
     if (err) {
-        logger.getLogger('error').error(err);
+        logger.errorLogger.error(err);
     }
 
-    logger.getLogger('debug').info(`App started on port ${app.get('port')}...`);
+    logger.errorLogger.info(`App started on port ${app.get('port')}...`);
 });
