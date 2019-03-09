@@ -27,7 +27,7 @@ describe('Category', () => {
 
     describe('Create category', () => {
         it('should create a new category', async () => {
-            const category = testData.getProduct();
+            const category = testData.getCategory();
             const res = await chai.request(app)
                 .post(baseUrl)
                 .send(category)
@@ -45,5 +45,68 @@ describe('Category', () => {
         it('should not create category', async () => {
 
         })
+    });
+
+    describe('Get category', () => {
+        let category = null;
+
+        before(async () => {
+            category = new Category(testData.getCategory());
+            category.createdBy = admin;
+            await category.save();
+        });
+
+        it('should return category', async () => {
+            const res = await chai.request(app)
+                .get(`${baseUrl}/${category._id}`);
+
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.an('object');
+        });
+
+        it('should return categories', async () => {
+            const res = await chai.request(app)
+                .get(baseUrl)
+
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.an('array');
+        });
+    });
+
+    describe('Update category', () => {
+        it('should update category', async () => {
+            const category = new Category(testData.getCategory());
+            category.createdBy = admin;
+            await category.save();
+            const updatedTitle = 'updatedTitle';
+
+            const res = await chai.request(app)
+                .put(`${baseUrl}/${category._id}`)
+                .send({ title: updatedTitle })
+                .set('authorization', `Bearer ${tokenService.getToken(admin)}`);
+
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.an('object');
+            res.body.should.have.property('_id');
+            res.body.should.have.property('title').which.equal(updatedTitle);
+        });
+    });
+
+    describe('Delete category', () => {
+        it('should delete category', async () => {
+            const category = new Category(testData.getCategory());
+            category.createdBy = admin;
+            await category.save();
+
+            const res = await chai.request(app)
+                .delete(`${baseUrl}/${category._id}`)
+                .set('authorization', `Bearer ${tokenService.getToken(admin)}`);
+
+            res.should.have.status(204);
+            res.body.should.to.be.empty;
+        });
     });
 });

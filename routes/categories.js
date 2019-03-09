@@ -5,17 +5,32 @@ const checkAuth = require('../middleware/checkAuth');
 const validateObjectId = require('../middleware/validateObjectId');
 const configs = require('../configs');
 
-router.get('/', (req, res, next) => {
-    throw new Error('Not yet implemented!');
+router.get('/', async (req, res, next) => {
+    try {
+        const limit = (req.params.limit && req.params.limit <= configs.LIMIT) || configs.LIMIT;
+        const skip = req.params.from || 0;
+        const categories = await categoryRepository.find({ skip, limit });
+
+        return res.status(200).json(categories);
+    } catch (e) {
+        return next(e);
+    };
 });
 
-router.get('/:id', (req, res, next) => {
-    throw new Error('Not yet implemented!');
+router.get('/:id', async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const category = await categoryRepository.findById(id);
+
+        return res.status(200).json(category);
+    } catch (e) {
+        return next(e);
+    }
 });
 
 /**
  * @api {post} /api/categories Create category
- * @apiGroup Carts
+ * @apiGroup Categories
  * @apiPermission admin
  * @apiHeaderExample {json} Authorization:
  *     {
@@ -50,12 +65,42 @@ router.post('/', checkAuth.admin, async (req, res, next) => {
     }
 });
 
-router.put('/:id', (req, res, next) => {
-    throw new Error('Not yet implemented!');
+router.put('/:id', [validateObjectId, checkAuth.admin], async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const data = req.body;
+        const category = await categoryRepository.updateOne({ _id: id }, data);
+
+        return res.status(200).json(category);
+    } catch (e) {
+        next(e);
+    }
 });
 
-router.delete('/:id', (req, res, next) => {
-    throw new Error('Not yet implemented!');
+/**
+ * @api {delete} /api/categories/:id Delete category
+ * @apiGroup Categories
+ * @apiPermission admin
+ * @apiHeaderExample {json} Authorization:
+ *     {
+ *       "authorization": "Bearer {token}"
+ *     }
+ * @apiSuccessExample {json} Success
+ *    HTTP/1.1 204 No Content
+ * @apiErrorExample {json} Not found
+ *    HTTP/1.1 404 Not Found
+ * @apiErrorExample {json} Internal server error
+ *    HTTP/1.1 500 Internal Server Error
+ */
+router.delete('/:id', [validateObjectId, checkAuth.admin], async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        await categoryRepository.deleteOne({ _id: id });
+
+        return res.status(204).end();
+    } catch (e) {
+        return next(e);
+    }
 });
 
 module.exports = router;
