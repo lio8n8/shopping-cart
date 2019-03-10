@@ -3,6 +3,7 @@ const chaiHttp = require('chai-http');
 const app = require('../app');
 const logger = require('../utils/logger');
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 const User = require('../models/User');
 const tokenService = require('../services/tokenService');
 const baseUrl = '/api/products';
@@ -27,6 +28,10 @@ describe('Product', () => {
     describe('Create product', () => {
         it('should return a new product', async () => {
             const product = testData.getProduct();
+            const category = new Category(Object.assign(testData.getCategory(), { user: admin }));
+            category.save();
+            product.category = category;
+
             const res = await chai.request(app)
                 .post(baseUrl)
                 .send(product)
@@ -36,6 +41,7 @@ describe('Product', () => {
             res.should.be.json;
             res.body.should.be.an('object');
             res.body.should.have.property('_id');
+            res.body.should.have.property('category');
         });
     });
 

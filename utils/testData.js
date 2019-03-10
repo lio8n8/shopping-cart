@@ -17,3 +17,11 @@ module.exports.getProduct = () => {
         price: faker.commerce.price()
     };
 };
+
+module.exports.getCategory = () => {
+    return {
+        name: faker.commerce.productName(),
+        title: faker.lorem.sentence(),
+        description: faker.lorem.text(),
+    };
+};

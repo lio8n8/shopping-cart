@@ -49,6 +49,10 @@ const ProductSchema = mongoose.Schema({
     company: {
         type: String
     },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
