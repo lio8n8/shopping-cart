@@ -12,9 +12,13 @@ chai.use(chaiHttp);
 chai.should();
 
 describe('User', () => {
+    let admin = null;
+
     before(async () => {
         try {
             await User.deleteMany({});
+            admin = new User(Object.assign(testData.getUser(), { isAdmin: true }));
+            await admin.save();
         } catch (e) {
             logger.getLogger('error').error(e);
         }
@@ -69,7 +73,8 @@ describe('User', () => {
 
         it('should return users', async () => {
             const res = await chai.request(app)
-                .get(baseUrl);
+                .get(baseUrl)
+                .set('authorization', `Bearer ${tokenService.getToken(admin)}`);
 
             res.should.have.status(200);
             res.should.be.json;

@@ -10,8 +10,7 @@ const storage = require('../utils/diskStorage');
 const configs = require('../configs');
 const upload = multer({ storage: storage.avatarsStorage });
 
-// TODO: Should be visible only for admins.
-router.get('/', async (req, res, next) => {
+router.get('/', checkAuth.admin, async (req, res, next) => {
     try {
         const limit = (req.params.limit && req.params.limit <= configs.LIMIT) || configs.LIMIT;
         const skip = req.params.from || 0;
