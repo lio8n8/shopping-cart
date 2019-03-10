@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const fs = require('fs');
 const app = require('../app');
 const logger = require('../utils/logger');
 const User = require('../models/User');
@@ -22,16 +23,22 @@ describe('User', () => {
     describe('Create user', () => {
         it('should create a new user', async () => {
             const user = testData.getUser();
-            user.confirmPsw = user.psw;
+
             const res = await chai.request(app)
                 .post(baseUrl)
-                .send(user);
+                .attach('avatar', fs.readFileSync('test/data/images/avatar.png'), 'avatar.jpg')
+                .type('form')
+                .field('name', user.name)
+                .field('email', user.email)
+                .field('psw', user.psw)
+                .field('confirmPsw', user.psw);
 
             res.should.have.status(201);
             res.should.be.json;
             res.should.have.header('x-auth-token');
             res.body.should.be.an('object');
             res.body.should.have.property('_id');
+            res.body.should.have.property('imgPath');
         });
 
         it('should not create user without email', async () => {

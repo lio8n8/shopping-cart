@@ -29,7 +29,7 @@ const UserSchema = mongoose.Schema({
         minlength: 5,
         maxlength: 255
     },
-    imgUrl: {
+    imgPath: {
         type: String
     },
     lastLogin: {

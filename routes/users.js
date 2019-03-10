@@ -1,11 +1,14 @@
 const router = require('express').Router();
 const Joi = require('joi');
+const multer = require('multer');
 const userRepository = require('../repositories/User');
 const validators = require('../validators');
 const tokenService = require('../services/tokenService');
 const validateObjectId = require('../middleware/validateObjectId');
 const checkAuth = require('../middleware/checkAuth');
+const storage = require('../utils/diskStorage');
 const configs = require('../configs');
+const upload = multer({ storage: storage.avatarsStorage });
 
 // TODO: Should be visible only for admins.
 router.get('/', async (req, res, next) => {
@@ -32,15 +35,16 @@ router.get('/:id', [validateObjectId, checkAuth.user], async (req, res, next) =>
     }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', upload.single('avatar'), async (req, res, next) => {
     try {
         const data = req.body;
         const result = Joi.validate(data, validators.signup);
 
         if (result.error) {
-            res.status(400).json({ error: result.error.details[0].message });
+            return res.status(400).json({ error: result.error.details[0].message });
         }
 
+        data.imgPath = `uploads/users/${req.file.filename}`;
         const user = await userRepository.createOne(data);
 
         return res.header('x-auth-token', tokenService.getToken(user)).status(201).json(user);
