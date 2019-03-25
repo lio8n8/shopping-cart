@@ -1,8 +1,8 @@
-const https = require('http');
+const http = require('http');
 const app = require('./app');
 const logger = require('./utils/logger');
 
-const server = https.createServer(app);
+const server = http.createServer(app);
 
 server.on('close', () => {
     logger.errorLogger.info('Server closed closed');
