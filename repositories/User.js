@@ -3,8 +3,7 @@ const UserModel = require('../models/User');
 
 class User extends Crud {
     constructor() {
-        super();
-        this.model = UserModel;
+        super(UserModel);
     }
 
     findById(id, isShowPsw = false) {

@@ -3,8 +3,7 @@ const ProductModel = require('../models/Product');
 
 class Product extends Crud {
     constructor() {
-        super();
-        this.model = ProductModel;
+        super(ProductModel);
     }
 }
 

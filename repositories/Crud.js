@@ -1,10 +1,10 @@
 class Crud {
-    constructor() {
+    constructor(model = null) {
         if (new.target === Crud) {
             throw new Error('Can not construct abstract class.');
         }
 
-        this.model = null;
+        this.model = model;
     }
 
     findById(id) {
