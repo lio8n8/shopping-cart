@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "env-cmd ./dev.env nodemon server.js",
     "start": "npm run docs & env-cmd ./prod.env node server.js",
-    "test": "env-cmd ./test.env nyc mocha --exit",
+    "test": "env-cmd ./test.env mocha --exit",
+    "test:nyc": "env-cmd ./test.env nyc mocha --exit",
     "docs": "apidoc -i routes/ -o public/docs"
   },
   "repository": {
