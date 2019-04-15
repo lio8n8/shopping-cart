@@ -84,16 +84,8 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-UserSchema.methods.comparePasswords = function (textPsw) {
-    return new Promise((resolve, reject) => {
-        bcrypt.compare(textPsw, this.psw, (err, isMatch) => {
-            if (err) {
-                reject(err);
-            }
-
-            resolve(isMatch);
-        });
-    });
+UserSchema.methods.comparePasswords = async function (textPsw) {
+    return await bcrypt.compare(textPsw, this.psw);
 }
 
 module.exports = mongoose.model('User', UserSchema);
